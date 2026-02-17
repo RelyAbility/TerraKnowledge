@@ -11,7 +11,7 @@ If you’re editing or adding documentation, prefer updating/adding Markdown und
 
 ## Repository layout
 
-- `md/Terra/` — Primary documentation organized by domain (strategy, governance, product, data, architecture, etc.).
+- `md/Terra/` — Primary documentation organised by domain (strategy, governance, product, data, architecture, etc.).
 - `docx/Terra/` — Original/legacy Word documents (and related exports) mirroring the same high-level structure.
 
 ## Notes
