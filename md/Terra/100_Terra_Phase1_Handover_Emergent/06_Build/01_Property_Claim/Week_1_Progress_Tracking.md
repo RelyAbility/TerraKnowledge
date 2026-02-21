@@ -11,25 +11,35 @@
 
 ### 📅 Monday 21 Feb
 
-**Goal:** Auth Integration  
-**Scope:** Supabase sign-in + context preservation
+**Goal:** P0 Claims Persistence (UNPLANNED, PRIORITY SHIFT)
+**Status:** ✅ COMPLETED
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| EOD | Supabase table created (property_claims) | N/A | ✅ |
+| EOD | Backend endpoints migrated (3 endpoints) | N/A | ✅ |
+| EOD | Frontend claimsStore.ts created (Zustand) | N/A | ✅ |
+| EOD | Persistence verified (50/50 restart tests) | N/A | ✅ |
 
-**Blockers:** None yet  
-**Notes:**  
+**Blockers:** None  
+**Notes:** 
+- Claims now durable (survive backend restart)
+- Monitoring state persists across restarts
+- Trial activation state persists
+- Infrastructure-level reliability achieved
+- **Milestone:** This is NOT prototype anymore. Database integrity confirmed.  
 
 ---
 
 ### 📅 Tuesday 22 Feb
 
-**Goal:** Auth Integration (continued) + DCDB Mock Endpoints Start
+**Goal:** Stripe Integration (Phase 1: Trial Days 0-30 Logic)
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | Wire trial_end_date → stripe payment setup | — | ⏳ |
+| Afternoon | Day 25 reminder email trigger | — | ⏳ |
+| Evening | Day 30 → subscription pause automation | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
@@ -38,11 +48,13 @@
 
 ### 📅 Wednesday 23 Feb
 
-**Goal:** DCDB Mock Endpoints (complete) + RP Fallback
+**Goal:** Stripe Integration (Phase 2: Test Webhooks) + Real NDVI Start
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | Stripe webhook testing (payment success/failure) | — | ⏳ |
+| Afternoon | Real Sentinel-2 NDVI baseline logic | — | ⏳ |
+| Evening | Async NDVI job queuing (PostgreSQL trigger or cron) | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
@@ -51,11 +63,13 @@
 
 ### 📅 Thursday 24 Feb
 
-**Goal:** Claim UI Skeleton (3-screen flow)
+**Goal:** Satellite Icon State Machine (Visible on Map)
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | Satellite icon rendering (monitoring_state → visual) | — | ⏳ |
+| Afternoon | Icon integration with PropertyClaimFlow map | — | ⏳ |
+| Evening | Test icon state transitions (inactive → trial_active → subscribed → paused) | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
@@ -64,11 +78,13 @@
 
 ### 📅 Friday 25 Feb
 
-**Goal:** Stripe Integration + Satellite Icon State
+**Goal:** Integration Testing (Stripe + Icon + Persistence)
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | End-to-end claim → trial → subscription flow | — | ⏳ |
+| Afternoon | Icon state verification across all scenarios | — | ⏳ |
+| Evening | Ngrok tunnel validation + external access testing | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
@@ -77,11 +93,13 @@
 
 ### 📅 Saturday 26 Feb
 
-**Goal:** Testing + Polish
+**Goal:** Buffer + Stress Testing (Real NDVI)
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | Real NDVI data verification (10+ test properties) | — | ⏳ |
+| Afternoon | Load testing (multiple concurrent claims) | — | ⏳ |
+| Evening | Bug fix + final polish | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
@@ -90,11 +108,13 @@
 
 ### 📅 Sunday 27 Feb
 
-**Goal:** Buffer + Final Testing
+**Goal:** Sign-Off + Handoff
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| — | — | — | — |
+| Morning | Final checklist review (10 items complete?) | — | ⏳ |
+| Afternoon | Prepare demo environment for Brad + Coordinator | — | ⏳ |
+| Evening | Document any known issues / limitations | — | ⏳ |
 
 **Blockers:**  
 **Notes:**  
