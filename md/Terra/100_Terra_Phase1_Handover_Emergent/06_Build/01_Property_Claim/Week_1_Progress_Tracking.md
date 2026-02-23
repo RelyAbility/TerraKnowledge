@@ -54,55 +54,74 @@
 
 ### 📅 Wednesday 23 Feb
 
-**Goal:** NDVI Python Implementation + Stripe Foundation  
-**Status:** 🟢 UNBLOCKED — GEE credentials now available
+**Goal:** NDVI Python Implementation + Supabase Schema Deployment  
+**Status:** ✅ **COMPLETE** — All Feb 23 deliverables done
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | NDVI schema deployed (10 columns + constraints) | 2490eae | ✅ Executing |
-| Afternoon | Python get_ndvi_baseline() + get_ndvi_current() functions | — | ✅ Ready to code |
-| Evening | Local testing with 5+ coordinates (verify NDVI values 0.0-1.0) | — | ⏳ |
+| Time | Task | Status |
+|------|------|--------|
+| Morning | GEE credentials ready (env var: GEE_SERVICE_ACCOUNT_JSON) | ✅ Complete |
+| Morning | GEE Code Editor setup + connectivity test | ✅ Complete |
+| Afternoon | Python ndvi_service.py implementation | ✅ Complete |
+| Afternoon | Test with 5 coordinates (Gondwana + edges) | ✅ Complete |
+| Evening | NDVI schema deployed to Supabase (10 columns) | ✅ Complete |
 
-**GEE Credentials Status:** ✅ **NOW AVAILABLE**  
-- **Env Variable:** `GEE_SERVICE_ACCOUNT_JSON` (pod secret, secured)
-- **Format:** Complete JSON key (not individual fields)
-- **Implementation Guide:** [GEE_Credentials_Ready_Feb23.md](../GEE_Credentials_Ready_Feb23.md) — Full code + test coords
+**Results (Test Data):**
 
-**Notes:**  
-- NDVI schema confirmed (commit 2490eae pushed)
-- Python function code ready with 3 complete snippets (initialization, baseline, current, combined job)
-- Test coordinates provided (Gondwana + 4 nearby points)
-- No blockers—Emergent can start coding immediately  
+| Location | Baseline | Current | Delta | Trend |
+|----------|----------|---------|-------|-------|
+| Gondwana Centre | 0.8400 | 0.8726 | +0.033 | ✅ Improving |
+| Gold Creek Corridor | 0.6613 | 0.7326 | +0.071 | ✅ Improving |
+| Northern Edge | 0.6116 | 0.7035 | +0.092 | ✅ Improving |
+| Southern Edge | 0.3644 | 0.4989 | +0.134 | ✅ **Strongest signal** |
+| Western Edge | 0.6871 | 0.6532 | -0.034 | ⚠️ Declining |
+
+**Supabase Schema:** ✅ Deployed  
+- 10 NDVI columns added (ndvi_baseline, ndvi_current, ndvi_delta, date windows, status, timestamp, error)
+- ALTER TABLE completed successfully
+- Schema ready for RQ job integration
+
+**Milestone:** Real Sentinel-2 satellite NDVI data flowing from GEE to local Python ✓  
 
 ---
 
 ### 📅 Thursday 24 Feb
 
-**Goal:** Satellite Icon State Machine (Visible on Map)
+**Goal:** NDVI RQ Integration + FastAPI Wiring  
+**Status:** Next up (Building on Feb 23 success)
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | Satellite icon rendering (monitoring_state → visual) | — | ⏳ |
-| Afternoon | Icon integration with PropertyClaimFlow map | — | ⏳ |
-| Evening | Test icon state transitions (inactive → trial_active → subscribed → paused) | — | ⏳ |
+| Time | Task | Details | Status |
+|------|------|---------|--------|
+| Morning | RQ async queue setup | Wire compute_ndvi_job to RQ (or Celery) | ⏳ |
+| Afternoon | FastAPI endpoint | POST /api/property_claims → trigger RQ job on claim creation | ⏳ |
+| Afternoon | Supabase updates | RQ job writes NDVI results back to property_claims table | ⏳ |
+| Evening | E2E test | Claim created → RQ job enqueued → NDVI values appear in DB | ⏳ |
 
-**Blockers:**  
+**Dependencies:** Feb 23 complete (NDVI functions tested + schema deployed)  
+**Next Checkpoint:** RQ job processing verified with real claims (Feb 24 EOD)  
 **Notes:**  
+- Use RQ (Redis Queue) for Phase 1 simplicity vs Celery
+- Job status transitions: pending → processing → ready (via ndvi_status column)
+- Supabase real-time subscription next (Feb 25 frontend wiring)  
 
 ---
 
 ### 📅 Friday 25 Feb
 
-**Goal:** Integration Testing (Stripe + Icon + Persistence)
+**Goal:** Frontend NDVI Integration + Real-time Updates  
+**Status:** Depends on Feb 24 RQ completion
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | End-to-end claim → trial → subscription flow | — | ⏳ |
-| Afternoon | Icon state verification across all scenarios | — | ⏳ |
-| Evening | Ngrok tunnel validation + external access testing | — | ⏳ |
+| Time | Task | Details | Status |
+|------|------|---------|--------|
+| Morning | useClaimNDVI React hook | Subscribe to Supabase real-time NDVI updates | ⏳ |
+| Afternoon | NDVICard component | Display NDVI values + date windows on PropertyClaimFlow | ⏳ |
+| Evening | Integration test | Claim created → NDVI values display in UI with status spinner | ⏳ |
 
-**Blockers:**  
+**Dependencies:** Feb 24 RQ + FastAPI endpoint complete  
+**Next Checkpoint:** NDVI data flowing from claim creation → RQ job → Supabase → React hook → UI (Feb 25 EOD)  
 **Notes:**  
+- Status spinner during processing (ndvi_status = 'processing')
+- Display NDVI delta + date windows when ready
+- Error message display if job fails  
 
 ---
 
