@@ -87,60 +87,70 @@
 ### 📅 Thursday 24 Feb
 
 **Goal:** NDVI RQ Integration + E2E Testing  
-**Status:** 🔴 P0 PRIORITY — Test RQ Pipeline
+**Status:** ✅ **P0 COMPLETE** — RQ Pipeline tested and working
 
 | Phase | Task | Details | Owner | Status |
 |-------|------|---------|-------|--------|
-| **P0** | RQ Worker | Start worker, create test claim, monitor logs | Emergent | 🔴 NOW |
-| **P0** | Status Transitions | Verify `pending → ready` flow in database | Emergent | 🔴 NOW |
-| **P0** | NDVI Fields | Confirm all fields persisted (baseline, delta, trend, timestamps) | Emergent | 🔴 NOW |
-| **P0** | Error Handling | Simulate error conditions, verify error messages | Emergent | 🔴 NOW |
-| **P0** | Idempotency | Verify job can safely retry without corruption | Emergent | 🔴 NOW |
-| **P1** | Frontend Design | No mockups needed — follow accessible design spec | Emergent | ⏳ After P0 ✅ |
+| **P0** | RQ Worker | Start worker, create test claim, monitor logs | Emergent | ✅ Complete |
+| **P0** | Status Transitions | Verify `pending → ready` flow in database | Emergent | ✅ Complete |
+| **P0** | NDVI Fields | Confirm all fields persisted (baseline, delta, trend, timestamps) | Emergent | ✅ Complete |
+| **P0** | Error Handling | Simulate error conditions, verify error messages | Emergent | ✅ Complete |
+| **P0** | Idempotency | Verify job can safely retry without corruption | Emergent | ✅ Complete |
+| **P0** | ndvi_trend Persistence | Trend calculated and stored in Supabase | Emergent | ✅ Complete |
 
-**P0 Testing Sequence:**
-1. `rq worker default` (Terminal 1)
-2. Create test claim via `/api/claims` (Terminal 2)
-3. Monitor worker logs (expect 5-15s processing)
-4. Query Supabase: Verify ndvi_status transitions, fields populated, dates correct
-5. Test error case: Invalid coordinates → ndvi_status='error' + error_message
-6. Confirm idempotency: Job can re-run safely
+**Results:**
+- Full NDVI pipeline end-to-end working
+- All data persisted to Supabase (baseline, current, delta, trend, dates, status)
+- RQ job completes successfully with trend calculation
+- Ready for P1 frontend implementation
 
 **Reference:** [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md)  
-**Success Criteria:** All P0 checkpoints ✅ (8 must-haves listed in guide)  
-**Next:** P1 frontend accessible design (when P0 complete)  
+**Success Criteria:** All P0 checkpoints ✅ (verified)  
+**Next:** P1 frontend NDVICard component with accessibility design  
 
 ---
 
 ### 📅 Friday 25 Feb
 
 **Goal:** Frontend NDVI Display (Accessible Design)  
-**Status:** ⏳ Depends on P0 Complete
+**Status:** 🔴 **P1 PRIORITY** — Build NDVICard Component
 
 | Phase | Task | Details | Owner | Status |
 |-------|------|---------|-------|--------|
-| **P1** | NDVICard Component | Display vegetation health with large fonts, light theme | Emergent | ⏳ After P0 |
-| **P1** | useClaimNDVI Hook | Real-time subscription to ndvi_status changes (Supabase) | Emergent | ⏳ After P0 |
-| **P1** | Pending Animation | Satellite pulse (calm, 1200-1500ms cycle), text message | Emergent | ⏳ After P0 |
-| **P1** | Ready Animation | Brief pulse on satellite icon when status → ready (600-800ms) | Emergent | ⏳ After P0 |
-| **P1** | E2E Frontend Test | Create claim → spinner → data displays with animation | Emergent | ⏳ After P0 |
+| **P1** | NDVICard Component | Display vegetation health with large fonts, light theme | Emergent | 🔴 NOW |
+| **P1** | useClaimNDVI Hook | Real-time subscription to ndvi_status changes (Supabase) | Emergent | 🔴 NOW |
+| **P1** | Pending Animation | Satellite pulse (calm, 1200-1500ms cycle), text message | Emergent | 🔴 NOW |
+| **P1** | Ready Animation | Brief pulse on satellite icon when status → ready (600-800ms) | Emergent | 🔴 NOW |
+| **P1** | Map Satellite Icon | Visibility rules: visible (trial/subscribed), faded (paused), hidden (inactive) | Emergent | 🔴 NOW |
+| **P1** | E2E Frontend Test | Create claim → spinner → data displays with animation | Emergent | 🔴 NOW |
+
+**P1 Acceptance Criteria:**
+1. NDVICard displays for trial_active/subscribed claims with all fields (trend, current, source, timestamp)
+2. Pending state: calm satellite icon + "Analysing satellite imagery..."
+3. Ready state: all data visible + brief pulse animation
+4. Error state: error message + "Try again" button
+5. Satellite icon on map: visible/faded/hidden based on monitoring_state
 
 **Design Guidance (60+ Audience):**
-- Light theme, 16px+ fonts, lots of spacing
+- Light theme, 16px+ fonts, generous spacing
 - Plain language: "Vegetation health (from satellite)" not "NDVI"
-- Show: Current, 3-year change (improving/stable/declining), Source, Last updated
-- Pending: "Analysing satellite imagery for your site..." (calm pulsing icon)
+- Show: Current NDVI (rounded), 3-year change (improving/stable/declining + delta), Source, Last updated
+- Pending: "Analysing satellite imagery for your property…" (calm pulsing icon)
 - Ready: All fields visible + brief pulse animation on icon
+- Colors: Improving=green, Stable=gray, Declining=orange
 
-**Reference:** [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (design details + component layout)  
-**Success Criteria:** P1 works with actual NDVI data from P0 claims  
-**Next Checkpoint:** NDVI end-to-end working (claim → RQ job → UI display)  
+**Reference Documents:**
+- [Brad_P1_Frontend_Acceptance_Criteria.md](../Brad_P1_Frontend_Acceptance_Criteria.md) ← **Detailed acceptance criteria**
+- [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (additional design details)
 
+**Success Criteria:** P1 acceptance testing ✅ (all 10+ items passing)  
+**Next Checkpoint:** P1 complete by Feb 25 EOD, ready for P2 (Stripe + DCDB)  
 
 **Notes:**  
-- Status spinner during processing (ndvi_status = 'processing')
-- Display NDVI delta + date windows when ready
-- Error message display if job fails  
+- P0 is complete—use real NDVI data flowing into database
+- Focus on accessibility (large fonts, plain language, calm animations)
+- Supabase real-time subscription ensures instant UI updates on status changes
+- Keep it simple Phase 1 (card + icon, no charts/timeseries)  
 
 ---
 

@@ -1,7 +1,7 @@
 # README – Next Steps (Quick Reference)
 
-**Last Updated:** 23 February 2026  
-**Status:** Ready for P0 Testing (Feb 24)  
+**Last Updated:** 24 February 2026  
+**Status:** P0 Complete ✅ → P1 Starting (Feb 24)  
 **No Blockers** ✅
 
 ---
@@ -10,9 +10,36 @@
 
 ✅ **GEE Setup:** Pod environment configured  
 ✅ **Python NDVI:** Tested with 5 real coordinates (real Sentinel-2 data)  
-✅ **Database Schema:** 10 NDVI columns deployed to Supabase  
-✅ **RQ Code:** Written (not yet tested)  
-✅ **Frontend Spec:** Design guide complete (accessibility-first for 60+)  
+✅ **Database Schema:** 11 NDVI columns deployed to Supabase (with ndvi_trend)  
+✅ **RQ Code:** Tested and working end-to-end  
+✅ **P0 NDVI Pipeline:** COMPLETE — trend persisted to database ✅  
+✅ **Frontend Spec:** Detailed acceptance criteria ready  
+
+---
+
+## Emergent's Next Action (Feb 24 Afternoon)
+
+**P1 – Build NDVICard Frontend Component**
+
+1. Read: [Brad_P1_Frontend_Acceptance_Criteria.md](06_Build/Brad_P1_Frontend_Acceptance_Criteria.md) ← **START HERE**
+
+2. Build:
+   - **NDVICard component** (display vegetation health)
+   - **useClaimNDVI hook** (Supabase real-time subscription)
+   - **Satellite icon animation** (pending & ready states)
+   - **Satellite map icon** (visibility controls)
+
+3. P1 Acceptance Checklist (10 items):
+   - ✅ NDVICard displays for trial_active/subscribed claims
+   - ✅ Shows all fields (trend + current + source + timestamp)
+   - ✅ Pending state: calm satellite pulse + message
+   - ✅ Ready state: data visible + brief animation
+   - ✅ Error state: message + "Try again" button
+   - ✅ Satellite icon on map (visible/faded/hidden rules)
+   - ✅ 16px+ fonts, light theme, accessible
+   - ✅ Real-time updates via Supabase subscription
+   - ✅ Mobile responsive
+   - ✅ E2E: create claim → spinner → data displays  
 
 ---
 
@@ -64,9 +91,10 @@
 
 | Date | Task | Status | Duration |
 |------|------|--------|----------|
-| **Feb 24 (Now)** | **P0 E2E Testing** | **🔴 START NOW** | **2-3 hours** |
-| Feb 25 | P1 Frontend (NDVICard + useClaimNDVI hook) | After P0 ✅ | 6-8 hours |
-| Feb 26 | P1 Testing + P2 Stripe prep | Parallel | 4-6 hours |
+| Feb 24 (Now) | P0 NDVI E2E Testing | ✅ **COMPLETE** | — |
+| **Feb 24 Afternoon** | **P1 Frontend NDVICard** | **🔴 START NOW** | **4-6 hours** |
+| **Feb 25** | **P1 Testing + Polish** | **🔴 NEXT** | **2-4 hours** |
+| Feb 26 | P1 Complete + P2 Stripe prep | Parallel | 4-6 hours |
 | Feb 27 | P2 Stripe integration | After P1 ✅ | 4-6 hours |
 | Feb 27+ | P2 DCDB replacement | After P1 ✅ | 3-4 hours |
 | **Feb 28 09:00** | **Go/No-Go Decision** | **Checkpoint** | **30 min** |
@@ -76,31 +104,37 @@
 
 ## Key Documents (Read in This Order)
 
-### Before P0 Testing
-1. [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](06_Build/Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) ← **START HERE**
-2. [Brad_Feb24_Instructions_RQ_Integration.md](06_Build/Brad_Feb24_Instructions_RQ_Integration.md) (reference for SQL + Python)
+### P1 Frontend (New — P0 Complete)
+1. **[Brad_P1_Frontend_Acceptance_Criteria.md](06_Build/Brad_P1_Frontend_Acceptance_Criteria.md)** ← **START HERE** (detailed specs + testing checklist)
+2. [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](06_Build/Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (additional design guidance)
 
-### After P0 Complete (For P1)
-3. [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](06_Build/Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (scroll to P1 section)
+### P0 Reference (Already Complete)
+- [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](06_Build/Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (P0 sections for reference)
+- [Brad_Feb24_Instructions_RQ_Integration.md](06_Build/Brad_Feb24_Instructions_RQ_Integration.md) (RQ job code reference)
 
-### NDVI Reference (Technical)
+### NDVI Technical Reference
 - [02_NDVI_Satellite_Monitoring/GEE_Credentials_Ready_Feb23.md](06_Build/02_NDVI_Satellite_Monitoring/GEE_Credentials_Ready_Feb23.md) — Python code
-- [02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md](06_Build/02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md) — SQL schema
+- [02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md](06_Build/02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md) — SQL schema (with ndvi_trend)
 
 ### Daily Tracking
-- [01_Property_Claim/Week_1_Progress_Tracking.md](06_Build/01_Property_Claim/Week_1_Progress_Tracking.md) — Update daily
+- [01_Property_Claim/Week_1_Progress_Tracking.md](06_Build/01_Property_Claim/Week_1_Progress_Tracking.md) — Update daily with P1 progress
 
 ---
 
-## No Blockers
+## Status Update
 
-✅ GEE credentials deployed  
-✅ Python tested with real data  
-✅ Schema deployed  
-✅ RQ code written  
-✅ All specs locked  
+**P0 (NDVI Backend Pipeline):** ✅ COMPLETE
+- GEE credentials working
+- Python NDVI functions tested with real Sentinel-2 data (5/5 pass)
+- Supabase schema deployed (11 columns with ndvi_trend)
+- RQ job tested end-to-end, trend persisting
+- No blockers
 
-**You're ready to execute P0 immediately.**
+**P1 (Frontend NDVICard):** 🔴 NOW — Start immediately
+- Detailed acceptance criteria locked ✅
+- Design specifications finalized ✅
+- Real NDVI data available in Supabase ✅
+- Ready to build
 
 ---
 
@@ -108,30 +142,30 @@
 
 **For Feb 28 09:00 decision, MUST have:**
 
-- ✅ Claims persisting (Feb 21 complete, verified)
-- ✅ NDVI pipeline working end-to-end (P0 + P1 complete)
-- ✅ Frontend spinner + animation working (P1 complete)
-- ✅ Real data flowing claim → RQ → DB → UI
-- ✅ No critical blockers
-- ✅ Ready for soft launch (5 real users Mar 1-3)
+P0 ✓
+- ✅ Claims persistent
+- ✅ NDVI pipeline working (RQ job complete)
+- ✅ Trend persisting to database
+
+P1 ✓
+- ✅ NDVICard component displaying (trial_active claims)
+- ✅ Pending animation working (calm satellite pulse)
+- ✅ Ready state showing data + animation
+- ✅ Error handling + "Try again" working
+- ✅ Real-time updates (Supabase subscription)
+- ✅ Satellite icon on map (visibility rules)
+- ✅ Accessible (16px+ fonts, light theme, contrast)
+
+P2 (Optional, not blocking)
+- Stripe integration (if time permits)
+- DCDB real data (if time permits)
 
 ---
 
-## Priorities (Brad's Word)
+## Next: P1 Frontend
 
-1. **Reliability > Polish:** Get async job flow correct first
-2. **Accessibility > Flashiness:** 60+ audience, plain language, large fonts
-3. **Test > Launch:** Verify pipelines before soft launch
-4. **Soft Launch > Perfect:** Deploy with 5 real users, iterate
+Start with: [Brad_P1_Frontend_Acceptance_Criteria.md](06_Build/Brad_P1_Frontend_Acceptance_Criteria.md)
 
----
+Open files, build components, test against checklist.
 
-## Contact/Questions
-
-**Brad:** Monitoring, go/no-go authority  
-**Emergent:** Executing all tasks  
-**Source of Truth:** [TerraKnowledge GitHub](https://github.com/RelyAbility/TerraKnowledge)
-
----
-
-**Next:** Start P0 testing Feb 24 morning. Good luck!
+**Good luck!**
