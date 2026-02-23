@@ -33,31 +33,40 @@
 
 ### 📅 Tuesday 22 Feb
 
-**Goal:** Stripe Integration (Phase 1: Trial Days 0-30 Logic)
+**Goal:** GEE Setup (Brad) + NDVI Schema Foundation (Emergent) - PARALLEL WORKSTREAMS
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | Wire trial_end_date → stripe payment setup | — | ⏳ |
-| Afternoon | Day 25 reminder email trigger | — | ⏳ |
-| Evening | Day 30 → subscription pause automation | — | ⏳ |
+| Time | Task | Owner | Commit | Status |
+|------|------|-------|--------|--------|
+| Morning | GEE account creation (8 steps) | Brad | N/A | ✅ In Progress |
+| Morning | Supabase NDVI schema planning | Emergent | N/A | ✅ Ready |
+| Noon | GEE credentials ready | Brad | N/A | ⏳ |
+| Afternoon | NDVI SQL schema deployed | Emergent | N/A | ⏳ |
+| Afternoon | Python function skeleton | Emergent | N/A | ⏳ |
+| Evening | Credentials integration + local testing | Emergent | N/A | ⏳ |
 
-**Blockers:**  
+**Blockers:** Waiting on GEE credentials from Brad  
 **Notes:**  
+- Claims persistence complete (from Feb 21)
+- No blocking - parallel execution started
+- Emergent can work on schema while Brad sets up GEE  
 
 ---
 
 ### 📅 Wednesday 23 Feb
 
-**Goal:** Stripe Integration (Phase 2: Test Webhooks) + Real NDVI Start
+**Goal:** NDVI Python Implementation + Stripe Foundation
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| Morning | Stripe webhook testing (payment success/failure) | — | ⏳ |
-| Afternoon | Real Sentinel-2 NDVI baseline logic | — | ⏳ |
-| Evening | Async NDVI job queuing (PostgreSQL trigger or cron) | — | ⏳ |
+| Morning | NDVI schema deployed (10 columns + constraints) | N/A | ✅ Executing |
+| Afternoon | Python get_ndvi_baseline() function (if GEE ready) | N/A | ⏳ |
+| Evening | Local testing with 5+ coordinates | N/A | ⏳ |
 
-**Blockers:**  
+**Blockers:** GEE credentials (in-flight from Brad)  
 **Notes:**  
+- NDVI schema confirmed + ready to deploy
+- Python function skeleton ready (tests from [NDVI_Supabase_Schema_Deployment_Feb23.md](../NDVI_Supabase_Schema_Deployment_Feb23.md))
+- Stripe foundation work may start if bandwidth available  
 
 ---
 
