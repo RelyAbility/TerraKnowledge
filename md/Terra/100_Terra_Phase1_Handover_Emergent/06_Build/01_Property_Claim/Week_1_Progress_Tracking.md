@@ -139,45 +139,66 @@
 - Ready: All fields visible + brief pulse animation on icon
 - Colors: Improving=green, Stable=gray, Declining=orange
 
-**Reference Documents:**
-- [Brad_P1_Frontend_Acceptance_Criteria.md](../Brad_P1_Frontend_Acceptance_Criteria.md) ← **Detailed acceptance criteria**
-- [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (additional design details)
+**Completed:**
+✅ NDVICard component built (light theme, 16px+ fonts, calm animations)
+✅ 3 states working: pending (1200ms planet pulse), ready (full data + brief animation), error (message + retry)
+✅ useClaimNDVI hook with 5s polling
+✅ Accessibility verified (16px+, light theme, high contrast, plain language)
+✅ CompletionScreen integration
+✅ Expo web build successful (860 modules)
 
-**Success Criteria:** P1 acceptance testing ✅ (all 10+ items passing)  
-**Next Checkpoint:** P1 complete by Feb 25 EOD, ready for P2 (Stripe + DCDB)  
+**Files Created:**
+- `/app/frontend/src/components/ndvi/NDVICard.tsx`
+- `/app/frontend/src/components/ndvi/useClaimNDVI.ts`
+- `/app/frontend/src/components/ndvi/types.ts`
+- `/app/frontend/src/components/ndvi/index.ts`
 
-**Notes:**  
-- P0 is complete—use real NDVI data flowing into database
-- Focus on accessibility (large fonts, plain language, calm animations)
-- Supabase real-time subscription ensures instant UI updates on status changes
-- Keep it simple Phase 1 (card + icon, no charts/timeseries)  
+**Result:** ✅ **P1 COMPLETE** (Emergent delivered 24 hours, all acceptance criteria met)
+**Next Checkpoint:** P2 Stripe + DCDB implementation starting Saturday 26 Feb  
 
 ---
 
 ### 📅 Saturday 26 Feb
 
-**Goal:** Buffer + Stress Testing (Real NDVI)
+**Goal:** P2 Stripe Integration + DCDB Foundation  
+**Status:** 🟠 **P2 PRIORITY** — Execute Stripe + DCDB
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | Real NDVI data verification (10+ test properties) | — | ⏳ |
-| Afternoon | Load testing (multiple concurrent claims) | — | ⏳ |
-| Evening | Bug fix + final polish | — | ⏳ |
+| Phase | Task | Details | Owner | Status |
+|-------|------|---------|-------|--------|
+| **P2** | Stripe Payment Setup | Configure 30-day free trial (no card upfront), then $20/month subscription | Emergent | 🟠 NOW |
+| **P2** | Stripe Webhook Integration | Handle subscription status changes (active, past_due, paused) | Emergent | 🟠 NOW |
+| **P2** | DCDB Address Search | Replace mock /api/cadastral/by-point with real QLD data integration | Emergent | 🟠 NOW |
+| **P2** | Trial State Management | Handle Day 30 pause automation (monitoring_state: trial_active → paused) | Emergent | 🟠 NOW |
+| **P2** | E2E Testing | Full flow: claim → trial → Day 30 pause → Stripe signup → subscribed | Emergent | 🟠 NOW |
 
-**Blockers:**  
-**Notes:**  
+**Reference:** [Brad_P2_Stripe_and_DCDB_Spec.md](../Brad_P2_Stripe_and_DCDB_Spec.md) (detailed specs)
+
+**Success Criteria:** All P2 tasks ✅ (Stripe working, DCDB real data, trial pause automation)
+
+**Blockers:** None  
+**Notes:** ngrok tunnel environmental issue (known, non-blocking for core functionality)  
 
 ---
 
 ### 📅 Sunday 27 Feb
 
-**Goal:** Sign-Off + Handoff
+**Goal:** P2 Complete + Go/No-Go Preparation  
+**Status:** 🟠 **FINAL PUSH** — Verify all systems ready
 
-| Time | Task | Commit | Status |
-|------|------|--------|--------|
-| Morning | Final checklist review (10 items complete?) | — | ⏳ |
-| Afternoon | Prepare demo environment for Brad + Coordinator | — | ⏳ |
-| Evening | Document any known issues / limitations | — | ⏳ |
+| Time | Task | Details | Status |
+|------|------|---------|--------|
+| Morning | P2 Stripe Testing | End-to-end subscription flow (trial → paid) | ⏳ |
+| Morning | P2 DCDB Verification | Real parcel data displaying on map | ⏳ |
+| Afternoon | Go/No-Go Checklist | Verify all 10 Week 1 success criteria | ⏳ |
+| Afternoon | Demo Prep | Setup demo environment for Brad + Coordinator (5 real test claims) | ⏳ |
+| Evening | Known Issues Doc | Document any known limitations or workarounds | ⏳ |
+
+**Go/No-Go Criteria (Feb 28 09:00):** 
+- All P0/P1/P2 acceptance tests passing
+- No critical blockers
+- Ready for Mar 1 soft launch (5 real users)
+
+**Notes:** Backlog items (Geometric Birdwing animation, vector tiles) deferred post-launch
 
 **Blockers:**  
 **Notes:**  
