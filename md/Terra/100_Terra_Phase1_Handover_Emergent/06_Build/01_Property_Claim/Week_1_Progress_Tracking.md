@@ -86,57 +86,56 @@
 
 ### 📅 Thursday 24 Feb
 
-**Goal:** NDVI RQ Integration + FastAPI Wiring  
-**Status:** Ready to execute (Instructions from Brad)
+**Goal:** NDVI RQ Integration + E2E Testing  
+**Status:** 🔴 P0 PRIORITY — Test RQ Pipeline
 
-| Time | Task | Details | Owner | Status |
-|------|------|---------|-------|--------|
-| Morning | SQL Schema | Deploy 10 NDVI columns to Supabase (execute + verify) | Emergent | ⏳ |
-| Morning | RQ Setup | Install RQ + Redis, confirm worker connectivity | Emergent | ⏳ |
-| Afternoon | Job Implementation | Implement compute_ndvi_job() with delta + trend logic | Emergent | ⏳ |
-| Afternoon | FastAPI Integration | POST /api/property_claims triggers RQ job (fire-and-forget) | Emergent | ⏳ |
-| Afternoon | Supabase Updates | Job writes to ndvi_baseline, ndvi_current, ndvi_delta, ndvi_trend | Emergent | ⏳ |
-| Evening | E2E Test | Create claim → verify RQ job queued + NDVI values appear | Emergent | ⏳ |
+| Phase | Task | Details | Owner | Status |
+|-------|------|---------|-------|--------|
+| **P0** | RQ Worker | Start worker, create test claim, monitor logs | Emergent | 🔴 NOW |
+| **P0** | Status Transitions | Verify `pending → ready` flow in database | Emergent | 🔴 NOW |
+| **P0** | NDVI Fields | Confirm all fields persisted (baseline, delta, trend, timestamps) | Emergent | 🔴 NOW |
+| **P0** | Error Handling | Simulate error conditions, verify error messages | Emergent | 🔴 NOW |
+| **P0** | Idempotency | Verify job can safely retry without corruption | Emergent | 🔴 NOW |
+| **P1** | Frontend Design | No mockups needed — follow accessible design spec | Emergent | ⏳ After P0 ✅ |
 
-**Key Requirements:**
-- ✅ **SQL Migration:** 10 NDVI columns (baseline, current, delta, trend, date windows, status, timestamp, error)
-- ✅ **Fire-and-Forget:** Claim response returns immediately (no blocking on NDVI computation)
-- ✅ **NDVI Delta:** `current - baseline` stored in `ndvi_delta`
-- ✅ **NDVI Trend:** 
-  - `improving` if delta > +0.02
-  - `declining` if delta < -0.02
-  - `stable` otherwise
-- ✅ **Initial Status:** `ndvi_status = 'pending'` when claim created
-- ✅ **Job Processing:** RQ worker transitions to `'processing'` → `'ready'` (or `'error'`)
+**P0 Testing Sequence:**
+1. `rq worker default` (Terminal 1)
+2. Create test claim via `/api/claims` (Terminal 2)
+3. Monitor worker logs (expect 5-15s processing)
+4. Query Supabase: Verify ndvi_status transitions, fields populated, dates correct
+5. Test error case: Invalid coordinates → ndvi_status='error' + error_message
+6. Confirm idempotency: Job can re-run safely
 
-**Reference:** [Brad_Feb24_Instructions_RQ_Integration.md](../Brad_Feb24_Instructions_RQ_Integration.md)  
-**Next Checkpoint:** All NDVI data flowing (job triggered → status updated) (Feb 24 EOD)  
-**Notes:**  
-- Use Python RQ (no Node/Bull stack change)
-- Reliability > visual polish (core async flow first)
-- Supabase real-time subscription for frontend listening (Feb 25)  
+**Reference:** [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md)  
+**Success Criteria:** All P0 checkpoints ✅ (8 must-haves listed in guide)  
+**Next:** P1 frontend accessible design (when P0 complete)  
 
 ---
 
 ### 📅 Friday 25 Feb
 
-**Goal:** Frontend NDVI Integration + Animations  
-**Status:** Depends on Feb 24 RQ completion
+**Goal:** Frontend NDVI Display (Accessible Design)  
+**Status:** ⏳ Depends on P0 Complete
 
-| Time | Task | Details | Status |
-|------|------|---------|--------|
-| Morning | Spinner UI | Show "Downloading your site's vegetation health from satellite…" while pending | ⏳ |
-| Afternoon | Supabase Real-time Hook | useClaimNDVI hook subscribes to ndvi_status changes | ⏳ |
-| Afternoon | Animation | Brief satellite icon animation when status → ready | ⏳ |
-| Evening | Integration test | Claim created → spinner → data displays with animation | ⏳ |
+| Phase | Task | Details | Owner | Status |
+|-------|------|---------|-------|--------|
+| **P1** | NDVICard Component | Display vegetation health with large fonts, light theme | Emergent | ⏳ After P0 |
+| **P1** | useClaimNDVI Hook | Real-time subscription to ndvi_status changes (Supabase) | Emergent | ⏳ After P0 |
+| **P1** | Pending Animation | Satellite pulse (calm, 1200-1500ms cycle), text message | Emergent | ⏳ After P0 |
+| **P1** | Ready Animation | Brief pulse on satellite icon when status → ready (600-800ms) | Emergent | ⏳ After P0 |
+| **P1** | E2E Frontend Test | Create claim → spinner → data displays with animation | Emergent | ⏳ After P0 |
 
-**Dependencies:** Feb 24 RQ + FastAPI endpoint complete  
-**UI Requirements:**
-- Spinner text: "Downloading your site's vegetation health from satellite…"
-- Animation: Pulse/rotate satellite icon when status changes to 'ready' (500-800ms)
-- Display: NDVI delta, trend (improving/stable/declining), baseline vs current dates
-- Polling: Supabase real-time subscription for live status updates
-**Next Checkpoint:** NDVI data flowing from claim creation → RQ job → Supabase → React hook → UI (Feb 25 EOD)  
+**Design Guidance (60+ Audience):**
+- Light theme, 16px+ fonts, lots of spacing
+- Plain language: "Vegetation health (from satellite)" not "NDVI"
+- Show: Current, 3-year change (improving/stable/declining), Source, Last updated
+- Pending: "Analysing satellite imagery for your site..." (calm pulsing icon)
+- Ready: All fields visible + brief pulse animation on icon
+
+**Reference:** [Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md](../Brad_Response_P0_E2E_Testing_P1_Frontend_Design.md) (design details + component layout)  
+**Success Criteria:** P1 works with actual NDVI data from P0 claims  
+**Next Checkpoint:** NDVI end-to-end working (claim → RQ job → UI display)  
+
 
 **Notes:**  
 - Status spinner during processing (ndvi_status = 'processing')
