@@ -87,37 +87,57 @@
 ### 📅 Thursday 24 Feb
 
 **Goal:** NDVI RQ Integration + FastAPI Wiring  
-**Status:** Next up (Building on Feb 23 success)
+**Status:** Ready to execute (Instructions from Brad)
 
-| Time | Task | Details | Status |
-|------|------|---------|--------|
-| Morning | RQ async queue setup | Wire compute_ndvi_job to RQ (or Celery) | ⏳ |
-| Afternoon | FastAPI endpoint | POST /api/property_claims → trigger RQ job on claim creation | ⏳ |
-| Afternoon | Supabase updates | RQ job writes NDVI results back to property_claims table | ⏳ |
-| Evening | E2E test | Claim created → RQ job enqueued → NDVI values appear in DB | ⏳ |
+| Time | Task | Details | Owner | Status |
+|------|------|---------|-------|--------|
+| Morning | SQL Schema | Deploy 10 NDVI columns to Supabase (execute + verify) | Emergent | ⏳ |
+| Morning | RQ Setup | Install RQ + Redis, confirm worker connectivity | Emergent | ⏳ |
+| Afternoon | Job Implementation | Implement compute_ndvi_job() with delta + trend logic | Emergent | ⏳ |
+| Afternoon | FastAPI Integration | POST /api/property_claims triggers RQ job (fire-and-forget) | Emergent | ⏳ |
+| Afternoon | Supabase Updates | Job writes to ndvi_baseline, ndvi_current, ndvi_delta, ndvi_trend | Emergent | ⏳ |
+| Evening | E2E Test | Create claim → verify RQ job queued + NDVI values appear | Emergent | ⏳ |
 
-**Dependencies:** Feb 23 complete (NDVI functions tested + schema deployed)  
-**Next Checkpoint:** RQ job processing verified with real claims (Feb 24 EOD)  
+**Key Requirements:**
+- ✅ **SQL Migration:** 10 NDVI columns (baseline, current, delta, trend, date windows, status, timestamp, error)
+- ✅ **Fire-and-Forget:** Claim response returns immediately (no blocking on NDVI computation)
+- ✅ **NDVI Delta:** `current - baseline` stored in `ndvi_delta`
+- ✅ **NDVI Trend:** 
+  - `improving` if delta > +0.02
+  - `declining` if delta < -0.02
+  - `stable` otherwise
+- ✅ **Initial Status:** `ndvi_status = 'pending'` when claim created
+- ✅ **Job Processing:** RQ worker transitions to `'processing'` → `'ready'` (or `'error'`)
+
+**Reference:** [Brad_Feb24_Instructions_RQ_Integration.md](../Brad_Feb24_Instructions_RQ_Integration.md)  
+**Next Checkpoint:** All NDVI data flowing (job triggered → status updated) (Feb 24 EOD)  
 **Notes:**  
-- Use RQ (Redis Queue) for Phase 1 simplicity vs Celery
-- Job status transitions: pending → processing → ready (via ndvi_status column)
-- Supabase real-time subscription next (Feb 25 frontend wiring)  
+- Use Python RQ (no Node/Bull stack change)
+- Reliability > visual polish (core async flow first)
+- Supabase real-time subscription for frontend listening (Feb 25)  
 
 ---
 
 ### 📅 Friday 25 Feb
 
-**Goal:** Frontend NDVI Integration + Real-time Updates  
+**Goal:** Frontend NDVI Integration + Animations  
 **Status:** Depends on Feb 24 RQ completion
 
 | Time | Task | Details | Status |
 |------|------|---------|--------|
-| Morning | useClaimNDVI React hook | Subscribe to Supabase real-time NDVI updates | ⏳ |
-| Afternoon | NDVICard component | Display NDVI values + date windows on PropertyClaimFlow | ⏳ |
-| Evening | Integration test | Claim created → NDVI values display in UI with status spinner | ⏳ |
+| Morning | Spinner UI | Show "Downloading your site's vegetation health from satellite…" while pending | ⏳ |
+| Afternoon | Supabase Real-time Hook | useClaimNDVI hook subscribes to ndvi_status changes | ⏳ |
+| Afternoon | Animation | Brief satellite icon animation when status → ready | ⏳ |
+| Evening | Integration test | Claim created → spinner → data displays with animation | ⏳ |
 
 **Dependencies:** Feb 24 RQ + FastAPI endpoint complete  
+**UI Requirements:**
+- Spinner text: "Downloading your site's vegetation health from satellite…"
+- Animation: Pulse/rotate satellite icon when status changes to 'ready' (500-800ms)
+- Display: NDVI delta, trend (improving/stable/declining), baseline vs current dates
+- Polling: Supabase real-time subscription for live status updates
 **Next Checkpoint:** NDVI data flowing from claim creation → RQ job → Supabase → React hook → UI (Feb 25 EOD)  
+
 **Notes:**  
 - Status spinner during processing (ndvi_status = 'processing')
 - Display NDVI delta + date windows when ready
