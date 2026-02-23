@@ -54,19 +54,25 @@
 
 ### 📅 Wednesday 23 Feb
 
-**Goal:** NDVI Python Implementation + Stripe Foundation
+**Goal:** NDVI Python Implementation + Stripe Foundation  
+**Status:** 🟢 UNBLOCKED — GEE credentials now available
 
 | Time | Task | Commit | Status |
 |------|------|--------|--------|
-| Morning | NDVI schema deployed (10 columns + constraints) | N/A | ✅ Executing |
-| Afternoon | Python get_ndvi_baseline() function (if GEE ready) | N/A | ⏳ |
-| Evening | Local testing with 5+ coordinates | N/A | ⏳ |
+| Morning | NDVI schema deployed (10 columns + constraints) | 2490eae | ✅ Executing |
+| Afternoon | Python get_ndvi_baseline() + get_ndvi_current() functions | — | ✅ Ready to code |
+| Evening | Local testing with 5+ coordinates (verify NDVI values 0.0-1.0) | — | ⏳ |
 
-**Blockers:** GEE credentials (in-flight from Brad)  
+**GEE Credentials Status:** ✅ **NOW AVAILABLE**  
+- **Env Variable:** `GEE_SERVICE_ACCOUNT_JSON` (pod secret, secured)
+- **Format:** Complete JSON key (not individual fields)
+- **Implementation Guide:** [GEE_Credentials_Ready_Feb23.md](../GEE_Credentials_Ready_Feb23.md) — Full code + test coords
+
 **Notes:**  
-- NDVI schema confirmed + ready to deploy
-- Python function skeleton ready (tests from [NDVI_Supabase_Schema_Deployment_Feb23.md](../NDVI_Supabase_Schema_Deployment_Feb23.md))
-- Stripe foundation work may start if bandwidth available  
+- NDVI schema confirmed (commit 2490eae pushed)
+- Python function code ready with 3 complete snippets (initialization, baseline, current, combined job)
+- Test coordinates provided (Gondwana + 4 nearby points)
+- No blockers—Emergent can start coding immediately  
 
 ---
 
