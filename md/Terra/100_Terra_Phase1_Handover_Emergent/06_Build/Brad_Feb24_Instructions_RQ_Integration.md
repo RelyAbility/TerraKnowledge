@@ -18,14 +18,14 @@ ALTER TABLE property_claims
   ADD COLUMN IF NOT EXISTS ndvi_baseline DECIMAL,
   ADD COLUMN IF NOT EXISTS ndvi_current DECIMAL,
   ADD COLUMN IF NOT EXISTS ndvi_delta DECIMAL,
-  ADD COLUMN IF NOT EXISTS ndvi_trend TEXT DEFAULT 'pending'
-    CHECK (ndvi_trend IN ('improving', 'stable', 'declining', 'pending', 'processing', 'error')),
   ADD COLUMN IF NOT EXISTS date_baseline_start DATE,
   ADD COLUMN IF NOT EXISTS date_baseline_end DATE,
   ADD COLUMN IF NOT EXISTS date_current_start DATE,
   ADD COLUMN IF NOT EXISTS date_current_end DATE,
   ADD COLUMN IF NOT EXISTS ndvi_status TEXT DEFAULT 'pending'
     CHECK (ndvi_status IN ('pending', 'processing', 'ready', 'error')),
+  ADD COLUMN IF NOT EXISTS ndvi_trend VARCHAR(20)
+    CHECK (ndvi_trend IN ('improving', 'stable', 'declining')),
   ADD COLUMN IF NOT EXISTS ndvi_last_updated TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS ndvi_error_message TEXT;
 ```
@@ -69,23 +69,32 @@ ORDER BY column_name;
 
 #### C. Calculate NDVI delta + trend
 
+**Important:** ndvi_trend is ONLY calculated when the job completes successfully. It represents the system's snapshot decision at that moment. If threshold logic changes later, historical records remain unchanged.
+
 ```python
 def compute_ndvi_job(property_id: int, latitude: float, longitude: float) -> dict:
     """
     Compute NDVI baseline + current, calculate delta and trend.
+    On error: update ndvi_status to 'error' but leave ndvi_trend NULL.
     """
     baseline_result = get_ndvi_baseline(latitude, longitude)
     current_result = get_ndvi_current(latitude, longitude)
     
     if baseline_result.get('status') == 'error' or current_result.get('status') == 'error':
-        return {'status': 'error', 'error_message': '...'}
+        # Job failed: don't calculate trend
+        return {
+            'property_id': property_id,
+            'ndvi_status': 'error',
+            'ndvi_last_updated': datetime.now().isoformat(),
+            'ndvi_error_message': baseline_result.get('error') or current_result.get('error')
+        }
     
     # Calculate delta
     ndvi_baseline = float(baseline_result['ndvi_baseline'])
     ndvi_current = float(current_result['ndvi_current'])
     ndvi_delta = round(Decimal(str(ndvi_current - ndvi_baseline)), 3)
     
-    # Calculate trend
+    # Calculate trend (ONLY when successful)
     if ndvi_delta > 0.02:
         ndvi_trend = 'improving'
     elif ndvi_delta < -0.02:
@@ -93,20 +102,20 @@ def compute_ndvi_job(property_id: int, latitude: float, longitude: float) -> dic
     else:
         ndvi_trend = 'stable'
     
-    # Update property_claims table
+    # Job completed successfully: return all values
     return {
         'property_id': property_id,
         'ndvi_baseline': baseline_result['ndvi_baseline'],
         'ndvi_current': current_result['ndvi_current'],
         'ndvi_delta': ndvi_delta,
-        'ndvi_trend': ndvi_trend,
+        'ndvi_trend': ndvi_trend,  # Locked in at this moment
         'date_baseline_start': baseline_result['date_baseline_start'],
         'date_baseline_end': baseline_result['date_baseline_end'],
         'date_current_start': current_result['date_current_start'],
         'date_current_end': current_result['date_current_end'],
         'ndvi_status': 'ready',
         'ndvi_last_updated': datetime.now().isoformat(),
-        'error_message': None
+        'ndvi_error_message': None
     }
 ```
 

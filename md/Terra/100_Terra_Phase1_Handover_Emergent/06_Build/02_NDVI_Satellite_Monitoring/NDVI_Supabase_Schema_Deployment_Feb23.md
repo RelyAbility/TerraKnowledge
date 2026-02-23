@@ -1,14 +1,47 @@
-# NDVI Supabase Schema Implementation (Feb 23)
+# NDVI Supabase Schema Implementation (Feb 23–24)
 
-**Status:** Schema deployment ready  
-**Date:** 23 February 2026  
+**Status:** Schema deployment ready (ndvi_trend column added Feb 24)  
+**Date:** 23–24 February 2026  
 **Owner:** Brad/Emergent  
+
+---
+
+## ndvi_trend Column Addition (Feb 24)
+
+**Issue Found:** Emergent discovered `ndvi_trend` was missing from Supabase schema. The Python NDVI service calculates trend but had nowhere to persist it.
+
+**Decision:** ADD the column. Don't compute on-the-fly.
+
+### Why Persist ndvi_trend
+
+1. **Business Meaning:** Trend is not just maths—it's what the system believed at that moment
+2. **Future Changes:** Thresholds may change (+0.02 today, +0.03 later). If computed on-the-fly, historical results silently change
+3. **Data Integrity:** Once saved, you can never reinterpret historical claims differently
+4. **Frontend Performance:** Simple, fast lookup instead of deriving every time
+5. **Auditability:** Lock what you said at claim time
+
+### Threshold Logic (Implementation)
+
+In Python RQ job, after computing ndvi_delta:
+
+```python
+if ndvi_delta > 0.02:
+    ndvi_trend = 'improving'
+elif ndvi_delta < -0.02:
+    ndvi_trend = 'declining'
+else:
+    ndvi_trend = 'stable'
+```
+
+This gets stored to the database **at job completion**, never recomputed.
 
 ---
 
 ## SQL Confirmed ✅
 
-Your schema SQL is correct. It adds all 9 NDVI columns with proper constraints and validation.
+**CRITICAL UPDATE (Feb 24):** ndvi_trend column added—schema now complete.
+
+Your schema SQL is correct. It adds all 11 NDVI columns with proper constraints and validation.
 
 ### What This Does
 
@@ -23,6 +56,8 @@ ALTER TABLE property_claims
   ADD COLUMN IF NOT EXISTS date_current_end DATE,
   ADD COLUMN IF NOT EXISTS ndvi_status TEXT DEFAULT 'pending'
     CHECK (ndvi_status IN ('pending', 'processing', 'ready', 'error')),
+  ADD COLUMN IF NOT EXISTS ndvi_trend VARCHAR(20)
+    CHECK (ndvi_trend IN ('improving', 'stable', 'declining')),
   ADD COLUMN IF NOT EXISTS ndvi_last_updated TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS ndvi_error_message TEXT;
 ```
@@ -36,8 +71,9 @@ ALTER TABLE property_claims
 6. `date_current_start` — Start of current 90-day window (DATE)
 7. `date_current_end` — End of current 90-day window (DATE)
 8. `ndvi_status` — Job state with CHECK constraint (pending | processing | ready | error)
-9. `ndvi_last_updated` — When GEE query last ran (TIMESTAMPTZ for timezone)
-10. `ndvi_error_message` — Error details if status = 'error' (TEXT)
+9. `ndvi_trend` — Regeneration direction (improving | stable | declining) **[ADDED FEB 24]**
+10. `ndvi_last_updated` — When GEE query last ran (TIMESTAMPTZ for timezone)
+11. `ndvi_error_message` — Error details if status = 'error' (TEXT)
 
 **Key features:**
 - `IF NOT EXISTS` ensures idempotency (safe to re-run)
@@ -61,8 +97,8 @@ ORDER BY column_name;
 ```
 
 **Run after ALTER to verify:**
-- All 10 columns present
-- Data types correct (DECIMAL for values, DATE for windows, TIMESTAMPTZ for timestamp)
+- All 11 columns present
+- Data types correct (DECIMAL for values, DATE for windows, TIMESTAMPTZ for timestamp, VARCHAR for trend)
 - ordering by column_name for clarity
 
 ---
@@ -93,6 +129,7 @@ ndvi_delta             | numeric
 ndvi_error_message     | text
 ndvi_last_updated      | timestamp with time zone
 ndvi_status            | text
+ndvi_trend             | character varying
 ```
 
 ### 4. Test Write Permissions
@@ -171,6 +208,7 @@ ALTER TABLE property_claims
   DROP COLUMN IF EXISTS date_current_start,
   DROP COLUMN IF EXISTS date_current_end,
   DROP COLUMN IF EXISTS ndvi_status,
+  DROP COLUMN IF EXISTS ndvi_trend,
   DROP COLUMN IF EXISTS ndvi_last_updated,
   DROP COLUMN IF EXISTS ndvi_error_message;
 ```
