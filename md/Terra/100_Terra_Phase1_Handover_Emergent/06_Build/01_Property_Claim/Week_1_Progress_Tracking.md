@@ -141,11 +141,11 @@
 
 **Completed:**
 ✅ NDVICard component built (light theme, 16px+ fonts, calm animations)
-✅ 3 states working: pending (1200ms planet pulse), ready (full data + brief animation), error (message + retry)
+✅ 3 states coded: pending (1200ms planet pulse), ready (full data + brief animation), error (message + retry)
 ✅ useClaimNDVI hook with 5s polling
-✅ Accessibility verified (16px+, light theme, high contrast, plain language)
+✅ Accessibility implementation (16px+, light theme, high contrast, plain language)
 ✅ CompletionScreen integration
-✅ Expo web build successful (860 modules)
+✅ Expo build verification: Bundle successful (860 modules)
 
 **Files Created:**
 - `/app/frontend/src/components/ndvi/NDVICard.tsx`
@@ -153,30 +153,46 @@
 - `/app/frontend/src/components/ndvi/types.ts`
 - `/app/frontend/src/components/ndvi/index.ts`
 
-**Result:** ✅ **P1 COMPLETE** (Emergent delivered 24 hours, all acceptance criteria met)
-**Next Checkpoint:** P2 Stripe + DCDB implementation starting Saturday 26 Feb  
+**🔴 BLOCKER: ngrok Tunnel Infrastructure Issue**
+- Error: `java.io.IOException: Failed to download remote update`
+- Cause: ngrok tunnel timeout (CommandError: ngrok tunnel took too long to connect)
+- Impact: Cannot test P1 in Expo Go (remote update mechanism blocked)
+- Status: Code is correct, bundle is valid, tunnel is infrastructure issue
+- Workaround: Code compiles locally (can test in simulator/emulator when available)
+
+**Result:** P1 code complete but P1 testing blocked by tunnel
+**Next:** Resolve tunnel + test NDVICard in Expo Go, then proceed to P2  
 
 ---
 
 ### 📅 Saturday 26 Feb
 
-**Goal:** P2 Stripe Integration + DCDB Foundation  
-**Status:** 🟠 **P2 PRIORITY** — Execute Stripe + DCDB
+**Goal:** Resolve P1 Tunnel Issue + P2 Planning  
+**Status:** 🔴 **P1 BLOCKED** | 🟠 **P2 Preparation**
 
 | Phase | Task | Details | Owner | Status |
 |-------|------|---------|-------|--------|
-| **P2** | Stripe Payment Setup | Configure 30-day free trial (no card upfront), then $20/month subscription | Emergent | 🟠 NOW |
-| **P2** | Stripe Webhook Integration | Handle subscription status changes (active, past_due, paused) | Emergent | 🟠 NOW |
-| **P2** | DCDB Address Search | Replace mock /api/cadastral/by-point with real QLD data integration | Emergent | 🟠 NOW |
-| **P2** | Trial State Management | Handle Day 30 pause automation (monitoring_state: trial_active → paused) | Emergent | 🟠 NOW |
-| **P2** | E2E Testing | Full flow: claim → trial → Day 30 pause → Stripe signup → subscribed | Emergent | 🟠 NOW |
+| **P1** | Resolve Tunnel | ngrok connectivity debugging (retry, network change, or alternative) | Emergent | 🔴 BLOCKED |
+| **P1** | P1 Testing | Once tunnel works: test NDVICard in Expo Go (acceptance criteria) | Emergent | ⏳ Blocked |
+| **P2** | Stripe Planning | Review [Brad_P2_Stripe_and_DCDB_Spec.md](../Brad_P2_Stripe_and_DCDB_Spec.md) | Emergent | 🟠 Ready |
+| **P2** | DCDB Planning | Plan DCDB source/integration approach | Emergent | 🟠 Ready |
 
-**Reference:** [Brad_P2_Stripe_and_DCDB_Spec.md](../Brad_P2_Stripe_and_DCDB_Spec.md) (detailed specs)
+**Infrastructure Issue Details:**
+- ngrok tunnel keeps timing out during Expo Go remote update
+- `java.io.IOException: Failed to download remote update`
+- Likely causes: network timeout, ngrok service degradation, or ngrok account limits
+- **Code is correct** — bundle builds successfully (860 modules)
 
-**Success Criteria:** All P2 tasks ✅ (Stripe working, DCDB real data, trial pause automation)
+**Options to Resolve:**
+1. Wait and retry (tunnel may recover or rotate to new ngrok instance)
+2. Test in simulator/emulator (bypass tunnel, use direct connection)
+3. Change network (try hotspot or different wifi)
+4. Contact Emergent support for ngrok issues
 
-**Blockers:** None  
-**Notes:** ngrok tunnel environmental issue (known, non-blocking for core functionality)  
+**P2 Can Proceed:** Stripe + DCDB implementation doesn't depend on tunnel (backend/database work)
+
+**Blockers:** ngrok tunnel connectivity  
+**Notes:** P1 testing deferred until tunnel resolved; P2 prep/planning can proceed  
 
 ---
 

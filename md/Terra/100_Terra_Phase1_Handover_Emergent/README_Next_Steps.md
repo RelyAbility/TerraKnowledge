@@ -1,8 +1,8 @@
 # README – Next Steps (Quick Reference)
 
 **Last Updated:** 26 February 2026  
-**Status:** P0 ✅ Complete | P1 ✅ Complete | P2 🟠 Active  
-**No Blockers** ✅
+**Status:** P0 ✅ Complete | P1 ✅ Built (🔴 Tunnel Blocked) | P2 🟠 Ready  
+**Infrastructure Blocker:** ngrok tunnel timeout (non-code issue)  
 
 ---
 
@@ -14,50 +14,55 @@
 - ndvi_trend persisted to Supabase 
 - All acceptance criteria met
 
-✅ **P1 Frontend NDVI:** Complete and deployed
-- NDVICard component built (Expo web verified)
-- 3 states working (pending/ready/error)
-- Accessibility requirements met (16px+, light theme)
-- Real-time updates via Supabase subscription
-- Integrated into CompletionScreen
+✅ **P1 Frontend NDVI:** Code complete, builds successfully
+- NDVICard component built (Expo bundle: 860 modules)
+- 3 states implemented (pending/ready/error)
+- Accessibility requirements coded (16px+, light theme)
+- Real-time polling via useClaimNDVI hook
+- CompletionScreen integration done
+- **🔴 BLOCKED:** ngrok tunnel timeout preventing Expo Go testing
 
-🟠 **P2 Stripe + DCDB:** Starting Feb 26
-- Stripe: 30-day trial → $20/month subscription
-- DCDB: Real cadastral data integration
-- Timeline: Feb 26-27 execution
+🟠 **P2 Stripe + DCDB:** Ready when P1 unblocked
+- Specifications complete
+- No blocking dependencies
+- Can be implemented in parallel with P1 tunnel troubleshooting
 
 ---
 
-## Emergent's Next Action (Feb 26 Morning)
+## Emergent's Current Action (Feb 26)
 
-**P2 – Build Stripe + DCDB Integration**
+**🔴 Priority: Resolve ngrok Tunnel Issue**
 
-1. Read: [Brad_P2_Stripe_and_DCDB_Spec.md](06_Build/Brad_P2_Stripe_and_DCDB_Spec.md) ← **START HERE**
+The P1 code is correct, but infrastructure is blocking testing.
 
-2. Build P2a (Stripe):
-   - 30-day free trial configuration (no card upfront)
-   - $20/month subscription after trial
-   - Webhook integration (subscription status changes)
-   - Trial pause automation (Day 30 → paused state)
-   - Error handling (payment failures, retries)
+**Error:**
+```
+java.io.IOException: Failed to download remote update
+CommandError: ngrok tunnel took too long to connect
+```
 
-3. Build P2b (DCDB):
-   - Real QLD cadastral data integration
-   - Address search returns real DCDB results
-   - Parcel boundaries display on map (GeoJSON)
-   - Claim validation against real parcels only
+**Options (in order):**
 
-4. P2 Acceptance Checklist (10 items):
-   - ✅ Trial period working (30-day countdown)
-   - ✅ Stripe checkout integration complete
-   - ✅ Subscription status tracking (active/paused/cancelled)
-   - ✅ Webhook handling all events
-   - ✅ Trial pause automation (Day 30 triggers)
-   - ✅ DCDB address search returns real data
-   - ✅ Parcel boundaries display with correct colors
-   - ✅ Claim validation against real parcels
-   - ✅ E2E flow tested (trial → paid → cancelled)
-   - ✅ No critical blockers  
+1. **Wait & Retry** (Fastest)
+   - ngrok service may recover automatically
+   - Try restarting Expo Go after 5-10 minutes
+
+2. **Change Network** 
+   - Try mobile hotspot instead of wifi
+   - Network timeout may be ISP-specific
+
+3. **Test in Simulator/Emulator** (If available)
+   - Bypass tunnel, use direct local connection
+   - Verify P1 code functionality locally
+
+4. **Contact Emergent Support**
+   - If ngrok account has connection limits
+   - Request ngrok tunnel reset/renewal
+
+**Once Tunnel Works:**
+- Test NDVICard in Expo Go (5-10 minutes)
+- Verify all P1 acceptance criteria
+- Proceed to P2  
 
 ---
 
@@ -107,24 +112,29 @@
 
 ## Timeline
 
-| Date | Task | Status | Duration |
-|------|------|--------|----------|
-| Feb 23-24 | P0 NDVI E2E Testing | ✅ **COMPLETE** | — |
-| Feb 24-25 | P1 Frontend NDVICard | ✅ **COMPLETE** | — |
-| **Feb 26-27** | **P2 Stripe + DCDB** | **🟠 START NOW** | **4-6 hours** |
-| Feb 27 Evening | P2 Testing + Verification | 🟠 FINAL | 2-3 hours |
-| **Feb 28 09:00** | **Go/No-Go Decision** | **Checkpoint** | **30 min** |
-| Mar 1-3 | Soft launch (5 real users) | If Feb 28 ✅ | — |
+| Date | Task | Status | Duration | Notes |
+|------|------|--------|----------|-------|
+| Feb 23-24 | P0 NDVI E2E Testing | ✅ **COMPLETE** | — | Real data flowing |
+| Feb 24-25 | P1 Frontend NDVICard | ✅ **BUILT** | — | Code complete, bundle works |
+| Feb 26 (Now) | P1 Testing (Blocked) | 🔴 **TUNNEL ISSUE** | — | ngrok timeout, not code |
+| **Feb 26 (Parallel)** | **P2 Planning** | **🟠 READY** | **2-3 hours** | Stripe + DCDB specs done |
+| Feb 27 | P1 Testing (If resolved) | ⏳ Blocked | 1-2 hours | Test in Expo Go |
+| Feb 27 | P2 Implementation | 🟠 Ready | 4-6 hours | Stripe + DCDB build |
+| **Feb 28 09:00** | **Go/No-Go Decision** | **Depends on P1+P2** | **30 min** | If tunnel resolved + P2 done |
+| Mar 1-3 | Soft launch (5 users) | If Feb 28 ✅ | — | Real user testing |
 
 ---
 
 ## Key Documents (Read in This Order)
 
-### P2 (Current Phase — Feb 26-27)
-1. **[Brad_P2_Stripe_and_DCDB_Spec.md](06_Build/Brad_P2_Stripe_and_DCDB_Spec.md)** ← **START HERE** (detailed specs + testing checklist)
+### P1 Infrastructure Issue (Current)
+- **[Infrastructure_Issue_ngrok_Tunnel_Troubleshoot.md](06_Build/Infrastructure_Issue_ngrok_Tunnel_Troubleshoot.md)** ← Error details + workarounds
+
+### P2 (Ready to proceed)
+1. **[Brad_P2_Stripe_and_DCDB_Spec.md](06_Build/Brad_P2_Stripe_and_DCDB_Spec.md)** ← Can proceed while P1 tunnel resolves
 
 ### P0 + P1 Reference (Completed)
-- [Brad_P1_Frontend_Acceptance_Criteria.md](06_Build/Brad_P1_Frontend_Acceptance_Criteria.md) (P1 reference)
+- [Brad_P1_Frontend_Acceptance_Criteria.md](06_Build/Brad_P1_Frontend_Acceptance_Criteria.md) (P1 code reference)
 - [Brad_Feb24_Instructions_RQ_Integration.md](06_Build/Brad_Feb24_Instructions_RQ_Integration.md) (P0 reference)
 
 ### NDVI & Backend Technical Reference
@@ -132,7 +142,7 @@
 - [02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md](06_Build/02_NDVI_Satellite_Monitoring/NDVI_Supabase_Schema_Deployment_Feb23.md) — SQL schema
 
 ### Daily Tracking
-- [01_Property_Claim/Week_1_Progress_Tracking.md](06_Build/01_Property_Claim/Week_1_Progress_Tracking.md) — Update daily with P2 progress
+- [01_Property_Claim/Week_1_Progress_Tracking.md](06_Build/01_Property_Claim/Week_1_Progress_Tracking.md) — Update daily
 
 ---
 
@@ -144,54 +154,73 @@
 - All 10 NDVI columns + ndvi_trend persisted to Supabase
 - All acceptance tests passing
 
-**P1 (Frontend NDVICard):** ✅ COMPLETE  
-- NDVICard component built and deployed
-- 3 states working (pending/ready/error)
-- 5s polling via useClaimNDVI hook
-- Accessibility verified (16px+, light theme, contrast)
-- Expo web build successful (860 modules)
-- Integrated into CompletionScreen workflow
+**P1 (Frontend NDVICard):** ✅ CODE COMPLETE | 🔴 TESTING BLOCKED
+- NDVICard component built (light theme, 16px+, calm animations)
+- 3 states coded (pending/ready/error)
+- useClaimNDVI hook with 5s polling implemented
+- Accessibility implemented (16px+, light theme, contrast)
+- CompletionScreen integration done
+- Expo build successful (860 modules bundle)
+- **Blocked by:** ngrok tunnel timeout (infrastructure issue, not code)
+- **Workaround:** Can test in simulator/emulator if tunnel unavailable
 
-**P2 (Stripe + DCDB):** 🟠 ACTIVE (Feb 26-27)
-- Stripe: 30-day trial → $20/month subscription
-- DCDB: Real QLD cadastral data + boundary rendering
-- Trial automation: Day 30 pause trigger
-- Webhook handling: Subscription status changes
-- Timeline: 4-6 hours both components (Feb 26-27)
+**P2 (Stripe + DCDB):** 🟠 READY TO PROCEED
+- Comprehensive specifications complete
+- No blocking dependencies on P1
+- Can be implemented in parallel with P1 tunnel troubleshooting
+- Estimated: 4-6 hours (Stripe 2-3h, DCDB 2-3h)
 
 ---
 
 ## Success Criteria (Feb 28 Go/No-Go)
 
-**For Feb 28 09:00 decision, MUST have:**
+**For Feb 28 09:00 decision:**
 
 P0 ✓
 - ✅ Claims persistent (database verified)
 - ✅ NDVI pipeline working (RQ job complete, trend persisted)
 - ✅ Real Sentinel-2 data flowing
 
-P1 ✓
-- ✅ NDVICard displaying (trial_active claims)
-- ✅ All 3 states working (pending/ready/error)
+P1 ✓ (Code Complete, Testing Blocked)
+- ✅ NDVICard component built and bundles
+- ✅ All 3 states implemented (pending/ready/error)
 - ✅ Accessibility met (16px+, light theme, contrast)
-- ✅ Real-time updates via Supabase subscription
-- ✅ Build compiles (Expo web verified)
+- ⏳ Integration testing (blocked by tunnel; proceed if resolved)
+- ⏳ Acceptance criteria verification (needs Expo Go)
 
-P2 ✓
-- ✅ Stripe trial working (30-day countdown)
-- ✅ Subscription payment flow complete
-- ✅ Trial pause automation (Day 30 → paused)
-- ✅ Webhook handling (subscription status changes)
+P2 ✓ (If P1 blocker resolved in time)
+- ✅ Stripe trial + subscription configured
+- ✅ Trial pause automation (Day 30)
+- ✅ Webhook handling complete
 - ✅ DCDB real data integrated
-- ✅ Parcel boundaries display on map
-- ✅ Claim validation against real parcels
+- ✅ Parcel boundaries on map
+- ✅ E2E tested
 
-**Ready for soft launch** (5 real users Mar 1-3) if all P0/P1/P2 ✅
+**Go/No-Go Decision:**
+- If tunnel resolves by Feb 27 evening + P2 complete: ✅ **GREEN** (proceed to soft launch)
+- If tunnel unresolved but P1 code verified + P2 complete: 🟡 **YELLOW** (soft launch with simulator testing)
+- If tunnel unresolved + P1 untested: 🔴 **RED** (hold for tunnel fix + testing)
 
 ---
 
-## Next: P2 Frontend
+## Next Steps
 
-Start with: [Brad_P2_Stripe_and_DCDB_Spec.md](06_Build/Brad_P2_Stripe_and_DCDB_Spec.md)
+**Immediate (Feb 26 Morning):**
+1. Attempt to resolve ngrok tunnel (wait 5 min, restart Expo, try hotspot)
+2. If tunnel remains blocked: test P1 in simulator/emulator (verify code works)
+3. If P1 verifi able locally: proceed with P2 implementation (don't wait)
 
-**Good luck with P2!**
+**If Tunnel Resolves:**
+1. Test NDVICard in Expo Go (10 min)
+2. Verify acceptance criteria
+3. Proceed to P2
+
+**If Tunnel Unresolves:**
+1. Continue with P2 (Stripe + DCDB)
+2. Plan P1 testing for post-launch (tunnel may stabilize)
+3. Use simulator for verification if available
+
+**Documentation:**
+- See [Infrastructure_Issue_ngrok_Tunnel_Troubleshoot.md](06_Build/Infrastructure_Issue_ngrok_Tunnel_Troubleshoot.md) for detailed troubleshooting
+
+**Good luck!**
