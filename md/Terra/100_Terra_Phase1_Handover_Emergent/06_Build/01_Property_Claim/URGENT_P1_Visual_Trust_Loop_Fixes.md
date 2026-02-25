@@ -18,42 +18,83 @@ Without this, the trust loop feels broken.
 
 ---
 
+## Workflow (Assuming Real DCDB Data)
+
+```
+1. Brad sources DCDB GeoJSON (4.2 km pilot) from QLD
+   ↓
+2. Emergent ingests to Supabase: dcdb_parcels (parcel_id, geometry, address, area)
+   ↓
+3. User searches address in PropertyClaimFlow
+   ↓
+4. Backend queries Supabase: SELECT * FROM dcdb_parcels WHERE address ILIKE '%user_input%'
+   ↓
+5. Returns real parcel geometry (Polygon) from DCDB
+   ↓
+6. User confirms claim
+   ↓
+7. Backend calculates centroid from real geometry: ST_Centroid(geometry)
+   ↓
+8. Stores claim with: parcel_id, boundary (GeoJSON), centroid_lat, centroid_lng, monitoring_state
+   ↓
+9. Frontend map loads user's claimed properties
+   ↓
+10. Renders real cadastral boundaries on map (white stroke, green fill)
+    Renders satellite icon at real centroid
+    Highlights claimed grid cell in green
+    ↓
+11. User sees: "My real property, with real boundary, highlighted on the map."
+```
+
+---
+
 ## Requirements
 
 ### A. Claimed Parcel Boundary Rendering
 
+**Data Source: Real DCDB**
+This assumes:
+- Brad has provided DCDB GeoJSON for 4.2 km pilot
+- Emergent has ingested parcels to Supabase PostGIS (`dcdb_parcels` table)
+- Claim flow queries Supabase to get real parcel geometry
+- Boundary is NOT mock data — it's actual cadastral geometry
+
 **What to display:**
-- User claims property → PropertyClaimFlow stores claim in database with grid_id + boundary
-- Map queries user's claims on mount
+- User claims property → PropertyClaimFlow queries Supabase for real parcel boundary
+- Map queries user's claims on mount (from property_claims table)
 - For each claim with monitoring_state = "trial_active" or "subscribed":
-  - Render parcel boundary (white stroke, green fill, pulse animation)
-  - Show "Your property" label
+  - Render real parcel boundary (white stroke, green fill, pulse animation)
+  - Show "Your property" label at parcel centroid (calculated from geometry)
   - Attach satellite icon at parcel centroid
 
 **Implementation:**
 
-**Step 1: Update Claim Response**
-When user confirms claim in PropertyClaimFlow, return boundary geometry:
-
+**Response (Real DCDB Data):**
 ```json
 {
   "status": "success",
   "claim": {
     "claim_id": "claim_123",
     "parcel_id": "1234-567",
-    "grid_id": "T_E1_N2",
-    "address": "123 Main St, Brookfield",
+    "address": "123 Main Street, Brookfield QLD 4069",
+    "lot_plan": "L12 DP1234",
     "boundary": {
       "type": "Polygon",
-      "coordinates": [[[152.915, -27.490], ...]],
-      "centroid_lat": -27.4902,
-      "centroid_lng": 152.9156
+      "coordinates": [[[152.9156, -27.4902], [152.9158, -27.4902], [152.9158, -27.4905], [152.9156, -27.4905], [152.9156, -27.4902]]]
     },
+    "centroid_lat": -27.49035,
+    "centroid_lng": 152.91570,
     "monitoring_state": "trial_active",
-    "trial_ends": "2026-03-27"
+    "trial_ends": "2026-03-27T00:00:00Z"
   }
 }
 ```
+
+**Important Notes:**
+- Geometry comes from real DCDB (ingested from Supabase PostGIS)
+- Boundaries may be irregular/complex (not just rectangles)
+- Centroid is calculated from PostGIS ST_Centroid(), not approximated
+- GeoJSON coordinates are [longitude, latitude] (swapped from lat/lng)
 
 **Step 2: Update claimsStore**
 Add claimed property data to global state:
@@ -61,10 +102,12 @@ Add claimed property data to global state:
 ```tsx
 interface Claim {
   claim_id: string;
-  parcel_id: string;
+  parcel_id: string;  // Real DCDB parcel_id
   grid_id: string;
   address: string;
-  boundary: GeoJSON.Polygon;
+  boundary: GeoJSON.Polygon;  // Real cadastral geometry from Supabase
+  centroid_lat: number;
+  centroid_lng: number;
   monitoring_state: 'trial_active' | 'subscribed' | 'paused';
 }
 
